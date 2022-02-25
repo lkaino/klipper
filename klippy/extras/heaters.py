@@ -57,6 +57,7 @@ class Heater:
         # Load additional modules
         self.printer.load_object(config, "verify_heater %s" % (self.name,))
         self.printer.load_object(config, "pid_calibrate")
+        self.printer.load_object(config, "pid_tune")
         gcode = self.printer.lookup_object("gcode")
         gcode.register_mux_command("SET_HEATER_TEMPERATURE", "HEATER",
                                    self.name, self.cmd_SET_HEATER_TEMPERATURE,
@@ -176,9 +177,9 @@ class ControlPID:
     def __init__(self, heater, config):
         self.heater = heater
         self.heater_max_power = heater.get_max_power()
-        self.Kp = config.getfloat('pid_Kp') / PID_PARAM_BASE
-        self.Ki = config.getfloat('pid_Ki') / PID_PARAM_BASE
-        self.Kd = config.getfloat('pid_Kd') / PID_PARAM_BASE
+        self.Kp = config.getfloat('pid_Kp')
+        self.Ki = config.getfloat('pid_Ki')
+        self.Kd = config.getfloat('pid_Kd')
         self.min_deriv_time = heater.get_smooth_time()
         self.temp_integ_max = 0.
         if self.Ki:
@@ -187,6 +188,24 @@ class ControlPID:
         self.prev_temp_time = 0.
         self.prev_temp_deriv = 0.
         self.prev_temp_integ = 0.
+    @property
+    def Kp(self):
+        return self._Kp
+    @Kp.setter
+    def Kp(self, v):
+        self._Kp = v / PID_PARAM_BASE
+    @property
+    def Ki(self):
+        return self._Ki
+    @Ki.setter
+    def Ki(self, v):
+        self._Ki = v / PID_PARAM_BASE
+    @property
+    def Kd(self):
+        return self._Kd
+    @Kd.setter
+    def Kd(self, v):
+        self._Kd = v / PID_PARAM_BASE
     def temperature_update(self, read_time, temp, target_temp):
         time_diff = read_time - self.prev_temp_time
         # Calculate change of temperature
