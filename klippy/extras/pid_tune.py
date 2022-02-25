@@ -16,6 +16,7 @@ class PIDTune:
                                desc=self.cmd_PID_SET_GAINS_help)
 
     cmd_PID_SET_GAINS_help = "Run PID calibration test"
+
     def cmd_PID_SET_GAINS(self, gcmd):
         heater_name = gcmd.get('HEATER')
 
@@ -29,21 +30,23 @@ class PIDTune:
             raise gcmd.error("Not PID control!")
 
         try:
-            heater.control.Kp = gcmd.get_float('P')
+            heater.control.Kp = gcmd.get_float('P') / heaters.PID_PARAM_BASE
         except Exception:
             pass
         try:
-            heater.control.Ki = gcmd.get_float('I')
+            heater.control.Ki = gcmd.get_float('I') / heaters.PID_PARAM_BASE
         except Exception:
             pass
         try:
-            heater.control.Kd = gcmd.get_float('D')
+            heater.control.Kd = gcmd.get_float('D') / heaters.PID_PARAM_BASE
         except Exception:
             pass
 
         gcmd.respond_info(
             "New PID parameters: pid_Kp=%.3f pid_Ki=%.3f pid_Kd=%.3f."
-            % (heater.control.Kp, heater.control.Ki, heater.control.Kd))
+            % (heater.control.Kp * heaters.PID_PARAM_BASE,
+               heater.control.Ki * heaters.PID_PARAM_BASE,
+               heater.control.Kd * heaters.PID_PARAM_BASE))
 
 
 def load_config(config):
