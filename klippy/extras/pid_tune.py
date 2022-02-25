@@ -12,10 +12,11 @@ class PIDTune:
     def __init__(self, config):
         self.printer = config.get_printer()
         gcode = self.printer.lookup_object('gcode')
-        gcode.register_command('PID_TUNE', self.cmd_PID_SET_GAINS,
-                               desc=self.cmd_PID_CALIBRATE_help)
+        logging.error("TEST")
+        gcode.register_command('PID_SET_GAINS', self.cmd_PID_SET_GAINS,
+                               desc=self.cmd_PID_SET_GAINS_help)
 
-    cmd_PID_CALIBRATE_help = "Run PID calibration test"
+    cmd_PID_SET_GAINS_help = "Run PID calibration test"
     def cmd_PID_SET_GAINS(self, gcmd):
         heater_name = gcmd.get('HEATER')
 
