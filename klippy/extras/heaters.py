@@ -190,19 +190,19 @@ class ControlPID:
         self.prev_temp_integ = 0.
     @property
     def Kp(self):
-        return self._Kp
+        return self._Kp * PID_PARAM_BASE
     @Kp.setter
     def Kp(self, v):
         self._Kp = v / PID_PARAM_BASE
     @property
     def Ki(self):
-        return self._Ki
+        return self._Ki * PID_PARAM_BASE
     @Ki.setter
     def Ki(self, v):
         self._Ki = v / PID_PARAM_BASE
     @property
     def Kd(self):
-        return self._Kd
+        return self._Kd * PID_PARAM_BASE
     @Kd.setter
     def Kd(self, v):
         self._Kd = v / PID_PARAM_BASE
@@ -220,7 +220,7 @@ class ControlPID:
         temp_integ = self.prev_temp_integ + temp_err * time_diff
         temp_integ = max(0., min(self.temp_integ_max, temp_integ))
         # Calculate output
-        co = self.Kp*temp_err + self.Ki*temp_integ - self.Kd*temp_deriv
+        co = self._Kp*temp_err + self._Ki*temp_integ - self._Kd*temp_deriv
         #logging.debug("pid: %f@%.3f -> diff=%f deriv=%f err=%f integ=%f co=%d",
         #    temp, read_time, temp_diff, temp_deriv, temp_err, temp_integ, co)
         bounded_co = max(0., min(self.heater_max_power, co))

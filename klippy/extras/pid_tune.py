@@ -12,7 +12,6 @@ class PIDTune:
     def __init__(self, config):
         self.printer = config.get_printer()
         gcode = self.printer.lookup_object('gcode')
-        logging.error("TEST")
         gcode.register_command('PID_SET_GAINS', self.cmd_PID_SET_GAINS,
                                desc=self.cmd_PID_SET_GAINS_help)
 
